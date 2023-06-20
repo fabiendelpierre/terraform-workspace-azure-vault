@@ -1,0 +1,85 @@
+name: Pull requests
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  tests:
+    name: Linting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3.5.3
+      - name: Cache plugin dir
+        uses: actions/cache@v3.3.1
+        with:
+          path: ~/.tflint.d/plugins
+          key: tflint-${{ hashFiles('.tflint.hcl') }}
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2.0.3
+        with:
+          terraform_version: ~1
+      - name: Terraform fmt
+        run: terraform fmt -check
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v3.0.0
+        with:
+          tflint_version: latest
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+  checkov:
+    name: Checkov
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3.5.3
+      - name: Run Checkov
+        id: checkov
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: ./
+  tfplan:
+    name: Terraform plan
+    needs: checkov
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3.5.3
+      - name: Cache plugin dir
+        uses: actions/cache@v3.3.1
+        with:
+          path: ~/.tflint.d/plugins
+          key: tflint-${{ hashFiles('.tflint.hcl') }}
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2.0.3
+        with:
+          terraform_version: ~1
+      - name: Az CLI login
+        needs: checkov
+        uses: azure/login@v1.4.6
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Terraform Init
+        id: init
+        env:
+          TF_VAR_state_backend_resource_group_name: ${{ secrets.AZURE_STATE_RG_NAME }}
+          TF_VAR_state_backend_storage_account_name: ${{ secrets.AZURE_SA_NAME }}
+          TF_VAR_state_backend_storage_container_name: ${{ secrets.AZURE_SA_CONTAINER_NAME }}
+          TF_VAR_state_backend_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          TF_VAR_state_backend_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
+        run: terraform init
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color
