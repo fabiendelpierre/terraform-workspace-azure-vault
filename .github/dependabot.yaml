@@ -1,0 +1,12 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    registries: "*"
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: terraform
+    registries: "*"
+    directory: /
+    schedule:
+      interval: weekly
