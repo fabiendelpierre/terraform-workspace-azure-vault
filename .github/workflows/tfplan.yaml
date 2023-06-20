@@ -62,7 +62,6 @@ jobs:
         with:
           terraform_version: ~1
       - name: Az CLI login
-        needs: checkov
         uses: azure/login@v1.4.6
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
