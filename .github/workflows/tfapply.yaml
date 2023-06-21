@@ -1,0 +1,45 @@
+name: Run Azure Login with OpenID Connect
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  tfapply:
+    name: Terraform Apply
+    runs-on: ubuntu-latest
+    env:
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3.5.3
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2.0.3
+        with:
+          terraform_version: ~1
+      - name: Az CLI login
+        uses: azure/login@v1.4.7
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+      - name: Terraform Init
+        id: init
+        run: terraform init
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color -out=./planfile
+      - name: Terraform Apply
+        id: apply
+        run: terraform apply -no-color -auto-approve ./planfile
