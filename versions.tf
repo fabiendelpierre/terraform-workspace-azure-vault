@@ -5,10 +5,10 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "~> 3.61"
     }
-    github = {
-      source  = "integrations/github"
-      version = "~> 5.28"
-    }
+    # github = {
+    #   source  = "integrations/github"
+    #   version = "~> 5.28"
+    # }
     random = {
       source  = "hashicorp/random"
       version = "~> 3.5"

@@ -83,6 +83,6 @@ variable "terraform_pipeline_object_id" {
   type = string
 }
 
-variable "gh_pat" {
-  type = string
-}
+# variable "gh_pat" {
+#   type = string
+# }

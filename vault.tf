@@ -37,12 +37,12 @@ resource "azurerm_storage_account" "vault" {
   account_replication_type = "LRS"
   min_tls_version          = "TLS1_2"
 
-  network_rules {
-    bypass                     = ["AzureServices"]
-    default_action             = "Deny"
-    virtual_network_subnet_ids = [azurerm_subnet.vms.id]
-    ip_rules                   = local.storage_account_ip_allowlist
-  }
+  # network_rules {
+  #   bypass                     = ["AzureServices"]
+  #   default_action             = "Deny"
+  #   virtual_network_subnet_ids = [azurerm_subnet.vms.id]
+  #   ip_rules                   = local.storage_account_ip_allowlist
+  # }
 }
 
 resource "azurerm_storage_container" "vault" {
@@ -63,12 +63,12 @@ resource "azurerm_key_vault" "vault" {
   soft_delete_retention_days  = 7
   purge_protection_enabled    = false
 
-  network_acls {
-    bypass                     = "AzureServices"
-    default_action             = "Deny"
-    virtual_network_subnet_ids = [azurerm_subnet.vms.id]
-    ip_rules                   = local.key_vault_ip_allowlist
-  }
+  # network_acls {
+  #   bypass                     = "AzureServices"
+  #   default_action             = "Deny"
+  #   virtual_network_subnet_ids = [azurerm_subnet.vms.id]
+  #   ip_rules                   = local.key_vault_ip_allowlist
+  # }
 }
 
 resource "azurerm_key_vault_access_policy" "msi" {
