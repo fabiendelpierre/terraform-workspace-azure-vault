@@ -41,7 +41,7 @@ resource "azurerm_storage_account" "vault" {
     bypass                     = ["AzureServices"]
     default_action             = "Deny"
     virtual_network_subnet_ids = [azurerm_subnet.vms.id]
-    ip_rules                   = flatten([for i in var.vault_ip_allowlist : replace(i, "/32", "")], data.github_ip_ranges.main.actions_ipv4)
+    ip_rules                   = flatten([[for i in var.vault_ip_allowlist : replace(i, "/32", "")], data.github_ip_ranges.main.actions_ipv4])
   }
 }
 
@@ -67,7 +67,7 @@ resource "azurerm_key_vault" "vault" {
     bypass                     = "AzureServices"
     default_action             = "Deny"
     virtual_network_subnet_ids = [azurerm_subnet.vms.id]
-    ip_rules                   = flatten(var.vault_ip_allowlist, data.github_ip_ranges.main.actions_ipv4)
+    ip_rules                   = flatten([var.vault_ip_allowlist, data.github_ip_ranges.main.actions_ipv4])
   }
 }
 
