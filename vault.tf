@@ -36,13 +36,6 @@ resource "azurerm_storage_account" "vault" {
   account_tier             = "Standard"
   account_replication_type = "LRS"
   min_tls_version          = "TLS1_2"
-
-  # network_rules {
-  #   bypass                     = ["AzureServices"]
-  #   default_action             = "Deny"
-  #   virtual_network_subnet_ids = [azurerm_subnet.vms.id]
-  #   ip_rules                   = local.storage_account_ip_allowlist
-  # }
 }
 
 resource "azurerm_storage_container" "vault" {
@@ -62,13 +55,6 @@ resource "azurerm_key_vault" "vault" {
   tenant_id                   = data.azurerm_client_config.current.tenant_id
   soft_delete_retention_days  = 7
   purge_protection_enabled    = false
-
-  # network_acls {
-  #   bypass                     = "AzureServices"
-  #   default_action             = "Deny"
-  #   virtual_network_subnet_ids = [azurerm_subnet.vms.id]
-  #   ip_rules                   = local.key_vault_ip_allowlist
-  # }
 }
 
 resource "azurerm_key_vault_access_policy" "msi" {
@@ -174,55 +160,55 @@ resource "azurerm_network_interface_application_security_group_association" "vau
   application_security_group_id = azurerm_application_security_group.vault.id
 }
 
-resource "azurerm_linux_virtual_machine" "vault" {
-  depends_on = [
-    azurerm_key_vault_key.vault,
-    azurerm_role_assignment.msi_keyvault,
-    azurerm_role_assignment.msi_dns,
-  ]
+# resource "azurerm_linux_virtual_machine" "vault" {
+#   depends_on = [
+#     azurerm_key_vault_key.vault,
+#     azurerm_role_assignment.msi_keyvault,
+#     azurerm_role_assignment.msi_dns,
+#   ]
 
-  name                  = "${var.resource_name_prefix}-vm-vault"
-  location              = azurerm_resource_group.vault.location
-  resource_group_name   = azurerm_resource_group.vault.name
-  size                  = var.vm_size
-  admin_username        = var.vault_admin_username
-  network_interface_ids = [azurerm_network_interface.vault.id]
-  user_data = base64encode(templatefile("${path.module}/vault_vm_user_data.tpl", {
-    timezone                   = var.vm_timezone,
-    arch                       = var.vm_arch,
-    vault_version              = var.vault_version,
-    dns_zone_resource_group_id = data.azurerm_resource_group.dns_zone.id,
-    dns_zone_name              = var.dns_zone_name,
-    certbot_contact_email      = var.certbot_contact_email,
-    acme_staging               = var.acme_staging,
-    azure_tenant_id            = data.azurerm_client_config.current.tenant_id,
-    msi_id                     = azurerm_user_assigned_identity.vault.id,
-    msi_client_id              = azurerm_user_assigned_identity.vault.client_id,
-    key_vault_name             = azurerm_key_vault.vault.name,
-    key_vault_key_name         = azurerm_key_vault_key.vault.name,
-    recovery_keys              = var.vault_unseal_recovery_keys,
-    recovery_threshold         = var.vault_unseal_recovery_threshold,
-  }))
+#   name                  = "${var.resource_name_prefix}-vm-vault"
+#   location              = azurerm_resource_group.vault.location
+#   resource_group_name   = azurerm_resource_group.vault.name
+#   size                  = var.vm_size
+#   admin_username        = var.vault_admin_username
+#   network_interface_ids = [azurerm_network_interface.vault.id]
+#   user_data = base64encode(templatefile("${path.module}/vault_vm_user_data.tpl", {
+#     timezone                   = var.vm_timezone,
+#     arch                       = var.vm_arch,
+#     vault_version              = var.vault_version,
+#     dns_zone_resource_group_id = data.azurerm_resource_group.dns_zone.id,
+#     dns_zone_name              = var.dns_zone_name,
+#     certbot_contact_email      = var.certbot_contact_email,
+#     acme_staging               = var.acme_staging,
+#     azure_tenant_id            = data.azurerm_client_config.current.tenant_id,
+#     msi_id                     = azurerm_user_assigned_identity.vault.id,
+#     msi_client_id              = azurerm_user_assigned_identity.vault.client_id,
+#     key_vault_name             = azurerm_key_vault.vault.name,
+#     key_vault_key_name         = azurerm_key_vault_key.vault.name,
+#     recovery_keys              = var.vault_unseal_recovery_keys,
+#     recovery_threshold         = var.vault_unseal_recovery_threshold,
+#   }))
 
-  admin_ssh_key {
-    username   = var.vault_admin_username
-    public_key = data.azurerm_ssh_public_key.main.public_key
-  }
+#   admin_ssh_key {
+#     username   = var.vault_admin_username
+#     public_key = data.azurerm_ssh_public_key.main.public_key
+#   }
 
-  os_disk {
-    caching              = "ReadWrite"
-    storage_account_type = "StandardSSD_LRS"
-  }
+#   os_disk {
+#     caching              = "ReadWrite"
+#     storage_account_type = "StandardSSD_LRS"
+#   }
 
-  source_image_reference {
-    publisher = "Canonical"
-    offer     = "0001-com-ubuntu-server-jammy"
-    sku       = "22_04-lts-arm64"
-    version   = "latest"
-  }
+#   source_image_reference {
+#     publisher = "Canonical"
+#     offer     = "0001-com-ubuntu-server-jammy"
+#     sku       = "22_04-lts-arm64"
+#     version   = "latest"
+#   }
 
-  identity {
-    type         = "UserAssigned"
-    identity_ids = [azurerm_user_assigned_identity.vault.id]
-  }
-}
+#   identity {
+#     type         = "UserAssigned"
+#     identity_ids = [azurerm_user_assigned_identity.vault.id]
+#   }
+# }

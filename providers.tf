@@ -6,7 +6,3 @@ provider "azurerm" {
     }
   }
 }
-
-# provider "github" {
-#   token = var.gh_pat
-# }

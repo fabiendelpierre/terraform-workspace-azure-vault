@@ -82,7 +82,3 @@ variable "my_aad_object_id" {
 variable "terraform_pipeline_object_id" {
   type = string
 }
-
-# variable "gh_pat" {
-#   type = string
-# }
