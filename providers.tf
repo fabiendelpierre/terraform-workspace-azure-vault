@@ -6,3 +6,5 @@ provider "azurerm" {
     }
   }
 }
+
+provider "github" {}
