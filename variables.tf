@@ -66,3 +66,11 @@ variable "vault_unseal_recovery_threshold" {
   type = number
   default = 1
 }
+
+variable "ssh_public_key_resource_group_name" {
+  type = string
+}
+
+variable "ssh_public_key_name" {
+  type = string
+}

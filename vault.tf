@@ -202,7 +202,7 @@ resource "azurerm_linux_virtual_machine" "vault" {
 
   admin_ssh_key {
     username   = var.vault_admin_username
-    public_key = file("~/.ssh/id_rsa.pub")
+    public_key = data.azurerm_ssh_public_key.main.public_key
   }
 
   os_disk {
