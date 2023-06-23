@@ -27,7 +27,7 @@ variable "certbot_contact_email" {
 }
 
 variable "acme_staging" {
-  type = string
+  type    = string
   default = "true"
 }
 
@@ -58,12 +58,12 @@ variable "storage_account_name_prefix" {
 }
 
 variable "vault_unseal_recovery_keys" {
-  type = number
+  type    = number
   default = 1
 }
 
 variable "vault_unseal_recovery_threshold" {
-  type = number
+  type    = number
   default = 1
 }
 
