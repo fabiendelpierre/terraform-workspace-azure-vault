@@ -53,7 +53,7 @@ jobs:
       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TF_VAR_gh_pat: ${{ secrets.GH_PAT }}
       TF_VAR_resource_name_prefix: ${{ secrets.RESOURCE_NAME_PREFIX }}
       TF_VAR_vnet_cidr: ${{ secrets.VNET_CIDR }}
       TF_VAR_vault_ip_allowlist: ${{ secrets.VAULT_IP_ALLOWLIST }}

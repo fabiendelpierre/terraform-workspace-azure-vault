@@ -7,4 +7,6 @@ provider "azurerm" {
   }
 }
 
-provider "github" {}
+provider "github" {
+  token = var.gh_pat
+}
