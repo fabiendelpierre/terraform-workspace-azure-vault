@@ -74,3 +74,11 @@ variable "ssh_public_key_resource_group_name" {
 variable "ssh_public_key_name" {
   type = string
 }
+
+variable "my_aad_object_id" {
+  type = string
+}
+
+variable "terraform_pipeline_object_id" {
+  type = string
+}

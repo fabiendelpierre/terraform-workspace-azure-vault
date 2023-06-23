@@ -81,10 +81,18 @@ resource "azurerm_key_vault_access_policy" "msi" {
   secret_permissions = ["List", "Get", "Set"]
 }
 
+resource "azurerm_key_vault_access_policy" "terraform" {
+  key_vault_id       = azurerm_key_vault.vault.id
+  tenant_id          = data.azurerm_client_config.current.tenant_id
+  object_id          = var.terraform_pipeline_object_id
+  key_permissions    = ["Create", "List", "Get", "Delete", "Purge", "GetRotationPolicy"]
+  secret_permissions = ["Get", "Delete", "Purge"]
+}
+
 resource "azurerm_key_vault_access_policy" "myself" {
   key_vault_id       = azurerm_key_vault.vault.id
   tenant_id          = data.azurerm_client_config.current.tenant_id
-  object_id          = "e03cc5b9-f27a-46f6-8bcf-3c0965f6245f"
+  object_id          = var.my_aad_object_id
   key_permissions    = ["Create", "List", "Get", "Delete", "Backup", "Purge", "Recover", "Restore", "GetRotationPolicy", "SetRotationPolicy"]
   secret_permissions = ["Get", "Set", "Delete", "List", "Purge", "Recover", "Restore", "Backup"]
 }
@@ -138,10 +146,6 @@ resource "azurerm_public_ip" "vault" {
   resource_group_name = azurerm_resource_group.vault.name
   location            = azurerm_resource_group.vault.location
   allocation_method   = "Static"
-}
-
-output "vault_public_ip" {
-  value = azurerm_public_ip.vault.ip_address
 }
 
 resource "azurerm_dns_a_record" "vault_public" {

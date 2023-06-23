@@ -66,6 +66,8 @@ jobs:
       TF_VAR_storage_account_name_prefix: ${{ vars.STORAGE_ACCOUNT_NAME_PREFIX }}
       TF_VAR_ssh_public_key_name: ${{ secrets.SSH_PUBLIC_KEY_NAME }}
       TF_VAR_ssh_public_key_resource_group_name: ${{ secrets.SSH_PUBLIC_KEY_RESOURCE_GROUP_NAME }}
+      TF_VAR_my_aad_object_id: ${{ secrets.MY_AAD_OBJECT_ID }}
+      TF_VAR_terraform_pipeline_object_id: ${{ secrets.TERRAFORM_PIPELINE_OBJECT_ID }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3.5.3
