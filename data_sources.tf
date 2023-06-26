@@ -13,5 +13,3 @@ data "azurerm_ssh_public_key" "main" {
   name                = var.ssh_public_key_name
   resource_group_name = var.ssh_public_key_resource_group_name
 }
-
-data "github_ip_ranges" "main" {}
