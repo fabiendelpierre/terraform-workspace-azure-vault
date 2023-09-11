@@ -37,7 +37,7 @@ jobs:
       TF_VAR_acme_staging: ${{ vars.ACME_STAGING }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3.6.0
+        uses: actions/checkout@v4.0.0
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2.0.3
         with:
