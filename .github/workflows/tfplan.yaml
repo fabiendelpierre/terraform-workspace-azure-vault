@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3.6.0
+        uses: actions/checkout@v4.0.0
       - name: Cache plugin dir
         uses: actions/cache@v3.3.2
         with:
@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3.6.0
+        uses: actions/checkout@v4.0.0
       - name: Run Checkov
         id: checkov
         uses: bridgecrewio/checkov-action@master
@@ -72,7 +72,7 @@ jobs:
       TF_VAR_acme_staging: ${{ vars.ACME_STAGING }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3.6.0
+        uses: actions/checkout@v4.0.0
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2.0.3
         with:
