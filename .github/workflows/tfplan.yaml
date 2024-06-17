@@ -23,7 +23,7 @@ jobs:
           path: ~/.tflint.d/plugins
           key: tflint-${{ hashFiles('.tflint.hcl') }}
       - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v3.0.0
+        uses: hashicorp/setup-terraform@v3.1.1
         with:
           terraform_version: ~1
       - name: Terraform fmt
@@ -74,7 +74,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4.1.7
       - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v3.0.0
+        uses: hashicorp/setup-terraform@v3.1.1
         with:
           terraform_version: ~1
       - name: Az CLI login
